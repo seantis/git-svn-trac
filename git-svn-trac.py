@@ -33,7 +33,7 @@ def parse_args():
         die("Git path does not exist", __doc__)
 
     try:
-        engine = create_engine(dsn, echo=True)
+        engine = create_engine(dsn)
         connection = engine.connect()
     except Exception, e:
         die("Couldn't connect to database: %s" % str(e))
@@ -68,7 +68,10 @@ def replace_reference(revmap, text):
 
     """
     def handler(match):
-        return '[%s]' % revmap[match.groups()[0]]
+        # get the new revision from the map or just leave the result
+        # (it might get triggered by things that don't point to a revision, 
+        # like python code within a comment)
+        return '[%s]' % revmap.get(match.groups()[0], match.groups()[0])
 
     return re.sub(_pattern, handler, text)
 
@@ -142,7 +145,6 @@ def migrate(engine, connection, revmap):
         print("Migrated %i records" % count)
 
     except Exception, e:
-
         trans.rollback()
         die("Migration error: %s" % repr(e), "Changes were rolled back")
 
