@@ -4,7 +4,7 @@ svn-git-trac - Migrate Trac Tickets Referencing Svn to Git
 Will replace all texts in ticket and ticket_changes that reference svn 
 (like [12345]) to the git hash equivalent (like [0a1bc3f]). 
 Uses sqlalchemy.core for db backend abstraction which enables it to 
-connect to all databases supported by trac.
+connect to all databases supported by trac. 
 
 Requirements
 ------------
@@ -28,6 +28,11 @@ If this command, run in the git folder, returns something along these lines:
     ...
 
 Then you are good to go!
+
+After running this script, be sure to do the following in Trac:
+
+trac-admin <trac project dir> config set git wikishortrev_len 7
+trac-admin <trac project dir> repository resync "*"
 
 Installation
 ------------
