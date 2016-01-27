@@ -61,7 +61,7 @@ def build_map(path):
 
     return revmap
 
-_pattern = re.compile(r'\[(changeset:")?(\d+)(/.+)?\]')
+_pattern = re.compile(r'\[(changeset:"?)?(\d+)(/.+)?"?\]')
 def replace_reference(revmap, text):
     """Given the revision map go through the text and replace the revision
     numbers in brackets with git hashes. 
@@ -71,7 +71,7 @@ def replace_reference(revmap, text):
         # get the new revision from the map or just leave the result
         # (it might get triggered by things that don't point to a revision, 
         # like python code within a comment)
-        return '[%s]' % revmap.get(match.groups()[1], match.groups()[1])
+        return '[changeset:%s]' % revmap.get(match.groups()[1], match.groups()[1])
 
     return re.sub(_pattern, handler, text)
 
